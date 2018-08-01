@@ -90,24 +90,6 @@ public class JoueurDAO {
         return (Joueur) query.getSingleResult();
     }
     
-    
-    /**
-     * Recupère id, pseudo, avatar, etat et nombre de carte par joueur : une list dans une liste 
-     * @param idPartie
-     * @return recupère id, pseudo, avatar, etat et nombre de carte par joueur : une list dans une liste 
-     */
-    public List recupererAutresJoueures(long idPartie) {
-        
-        EntityManager em = Persistence.createEntityManagerFactory("PU").createEntityManager();
-        
-        Query query = em.createQuery("SELECT j.id, j.pseudo, j.avatar, j.etat , COUNT(c.id)  "
-                + "FROM Joueur j JOIN j.cartes c JOIN j.partieActuelle pa WHERE pa.id = :idPartie "
-                + "GROUP BY j ");
-        query.setParameter("idPartie", idPartie);
-        
-        return query.getResultList();
-    }
-    
     public Joueur recupererJoueurViaId (long joueurId) {
         
         EntityManager em = Persistence.createEntityManagerFactory("PU").createEntityManager();

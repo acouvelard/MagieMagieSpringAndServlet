@@ -5,9 +5,8 @@
  */
 package atos.magie_magie.services;
 
-import atos.magie_magie.dao.CarteDAO;
-import atos.magie_magie.dao.JoueurDAO;
-import atos.magie_magie.dao.PartieDAO;
+import atos.magie_magie.dao.CarteDAOCrud;
+import atos.magie_magie.dao.JoueurDAOCrud;
 import atos.magie_magie.dao.PartieDAOCrud;
 import atos.magie_magie.entity.Carte;
 import atos.magie_magie.entity.Joueur;
@@ -16,6 +15,7 @@ import java.util.List;
 import java.util.Random;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -26,14 +26,19 @@ public class PartieService {
 
     @Autowired
     private PartieDAOCrud daoCrud;
-    private PartieDAO dao = new PartieDAO();
-    private JoueurDAO joueurDAO = new JoueurDAO();
-    private CarteDAO carteDAO = new CarteDAO();
+//    private PartieDAO dao = new PartieDAO();
+    @Autowired
+    private JoueurDAOCrud joueurDaoCrud;
+//    private JoueurDAO joueurDAO = new JoueurDAO();
+    @Autowired
+    private CarteDAOCrud carteDaoCrud;
+//    private CarteDAO carteDAO = new CarteDAO();
     
+    @Transactional
     public Joueur finDePartie (long partieId) {
-        List<Joueur> joueurs = joueurDAO.rechercheTousLesJoueursPourUnePartie(partieId);
+        List<Joueur> joueurs = joueurDaoCrud.findByPartieActuelleId(partieId);
         
-        List<Joueur> joueursEnAttente = joueurDAO.rechercherJoueursPasLaMainEtSommeil(partieId);
+        List<Joueur> joueursEnAttente = joueurDaoCrud.trouverJoueursEtatPasLaMainEtSommeilProfond(partieId);
         
         Joueur joueurGagnant = null;
         
@@ -45,21 +50,22 @@ public class PartieService {
                     joueur.setNbPartiesGagnees(joueur.getNbPartiesGagnees() + 1);
                     joueurGagnant = joueur;
                 }
-                joueurDAO.modifier(joueur);
+                joueurDaoCrud.save(joueur);
             }
         }
         return joueurGagnant;
     }
 
+    @Transactional
     public Partie demarrerPartie(long partieId) {
 
-        Partie partieQuiDemarre = dao.rechercherParId(partieId);
+        Partie partieQuiDemarre = daoCrud.findOne(partieId);
 
         for (Joueur joueur : partieQuiDemarre.getJoueurs()) {
 
             if (joueur.getOrdre() == 1) {
                 joueur.setEtat(Joueur.EtatJoueur.A_LA_MAIN);
-                joueurDAO.modifier(joueur);
+                joueurDaoCrud.save(joueur);
             }
 
             for (int i = 0; i < 7; i++) {
@@ -70,7 +76,7 @@ public class PartieService {
                 nouvelleCarte.setIngre(ingredients[carteRand]);
                 nouvelleCarte.setJoueurProprietaire(joueur);
                 joueur.getCartes().add(nouvelleCarte);
-                carteDAO.ajouterCarte(nouvelleCarte);
+                carteDaoCrud.save(nouvelleCarte);
             }
         }
 
@@ -82,11 +88,12 @@ public class PartieService {
         return daoCrud.listerPartieNonDemarrees();
     }
 
+    @Transactional
     public Partie creerNouvelleParite(String nom) {
 
         Partie p = new Partie();
         p.setNom(nom);
-        dao.ajouter(p);
+        daoCrud.save(p);
 
         return p;
     }

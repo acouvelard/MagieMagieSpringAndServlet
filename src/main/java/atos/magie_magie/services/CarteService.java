@@ -5,22 +5,27 @@
  */
 package atos.magie_magie.services;
 
-import atos.magie_magie.dao.CarteDAO;
+import atos.magie_magie.dao.CarteDAOCrud;
 import atos.magie_magie.entity.Carte;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
  * @author Administrateur
  */
+@Service
 public class CarteService {
     
-    private CarteDAO dao = new CarteDAO();
+//    private CarteDAO dao = new CarteDAO();
+    @Autowired
+    private CarteDAOCrud daoCrud;
     
+    @Transactional
     public Carte recupererCarteViaId (long carteId) {
         
-        Carte carte = dao.recupererCarteViaId(carteId);
-        
-        return carte;
+        return daoCrud.findOne(carteId);
     }
     
 }

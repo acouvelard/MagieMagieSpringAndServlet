@@ -5,14 +5,17 @@
  */
 package atos.magie_magie.services;
 
-import atos.magie_magie.dao.CarteDAO;
-import atos.magie_magie.dao.JoueurDAO;
-import atos.magie_magie.dao.PartieDAO;
+import atos.magie_magie.dao.CarteDAOCrud;
+import atos.magie_magie.dao.JoueurDAOCrud;
+import atos.magie_magie.dao.PartieDAOCrud;
 import atos.magie_magie.entity.Carte;
 import atos.magie_magie.entity.Joueur;
 import atos.magie_magie.entity.Partie;
 import java.util.List;
 import java.util.Random;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 
@@ -20,57 +23,65 @@ import java.util.Random;
  *
  * @author Administrateur
  */
-public class JoueurService {
+@Service
+public class JoueurService implements IJoueurService {
 
-    private JoueurDAO dao = new JoueurDAO();
-    private PartieDAO partieDAO = new PartieDAO();
-    private CarteDAO carteDAO = new CarteDAO();
+//    private JoueurDAO dao = new JoueurDAO();
+    @Autowired
+    private JoueurDAOCrud daoCrud;
+//    private PartieDAO partieDAO = new PartieDAO();
+    @Autowired
+    private PartieDAOCrud partieDaoCrud;
+//    private CarteDAO carteDAO = new CarteDAO();
+    @Autowired
+    private CarteDAOCrud carteDaoCrud;
     
+    @Override
     public List rechercherJoueurEtatPasLaMainEtSommeil(long partieId) {
         
-        List<Joueur> joueurs = dao.rechercherJoueursPasLaMainEtSommeil(partieId);
-        
-        return joueurs;
+        return daoCrud.trouverJoueursEtatPasLaMainEtSommeilProfond(partieId);
     }
     
+    @Override
     public List tousLesJoueursDeLaPartie (long partieId) {
         
-        List<Joueur> joueurs = dao.rechercheTousLesJoueursPourUnePartie(partieId);
-        
-        return joueurs;
+        return daoCrud.findByPartieActuelleId(partieId);
     }
     
+    @Override
     public Joueur recupJoueurViaId (long joueurId) {
         
-        Joueur joueur = dao.recupererJoueurViaId(joueurId);
-        
-        return joueur;
+        return daoCrud.findOne(joueurId);
     }
     
+    @Transactional
+    @Override
     public void sortInvisibilite (long partieId, Joueur joueurQuiALaMain) {
         
-        List<Joueur> joueurs = dao.rechercherJoueursPasLaMainEtSommeil(partieId);
+        List<Joueur> joueurs = daoCrud.trouverJoueursEtatPasLaMainEtSommeilProfond(partieId);
         
         for (Joueur joueur : joueurs) {
             int r = new Random().nextInt(joueur.getCartes().size());
             Carte cartePrise = joueur.getCartes().get(r);
             joueur.getCartes().remove(cartePrise);
-            dao.modifier(joueur);
+            daoCrud.save(joueur);
             cartePrise.setJoueurProprietaire(joueurQuiALaMain);
-            carteDAO.modifierCarte(cartePrise);
+            carteDaoCrud.save(cartePrise);
             joueurQuiALaMain.getCartes().add(cartePrise);
-            dao.modifier(joueurQuiALaMain);
+            daoCrud.save(joueurQuiALaMain);
 
 
             if (joueur.getCartes().size() == 0) {
             joueur.setEtat(Joueur.EtatJoueur.PERDU);
-            dao.modifier(joueur);
+            daoCrud.save(joueur);
         }
         }
         
         
     }
     
+    @Transactional
+    @Override
     public void sortPhiltreDAmour (Joueur joueurVictime, Joueur joueurQuiALaMain ) {
         
         List<Carte> cartesDeLaVictime = joueurVictime.getCartes();
@@ -91,24 +102,26 @@ public class JoueurService {
             int r = new Random().nextInt(cartesDeLaVictime.size());
             Carte cartePrise = cartesDeLaVictime.get(r);
             cartesDeLaVictime.remove(cartePrise);
-            dao.modifier(joueurVictime);
+            daoCrud.save(joueurVictime);
             cartePrise.setJoueurProprietaire(joueurQuiALaMain);
-            carteDAO.modifierCarte(cartePrise);
+            carteDaoCrud.save(cartePrise);
             joueurQuiALaMain.getCartes().add(cartePrise);
-            dao.modifier(joueurQuiALaMain);
+            daoCrud.save(joueurQuiALaMain);
 
         }
     }
     
+    @Transactional
+    @Override
     public void sortHypnose (Joueur joueurVictime, Joueur joueurQuiALaMain, long carteEchangeeId) {
         
         if (joueurVictime.getCartes().size() < 3) {
             List<Carte> cartes = joueurVictime.getCartes();
             for (Carte carte : cartes) {
                 joueurVictime.getCartes().remove(carte);
-                dao.modifier(joueurVictime);
+                daoCrud.save(joueurVictime);    
                 carte.setJoueurProprietaire(joueurQuiALaMain);
-                carteDAO.modifierCarte(carte);
+                carteDaoCrud.save(carte);
             }
             return;
         }
@@ -118,47 +131,52 @@ public class JoueurService {
             int r = new Random().nextInt(joueurVictime.getCartes().size());
             Carte cartePrise = joueurVictime.getCartes().get(r);
             joueurVictime.getCartes().remove(cartePrise);
-            dao.modifier(joueurVictime);
+            daoCrud.save(joueurVictime);
             cartePrise.setJoueurProprietaire(joueurQuiALaMain);
-            carteDAO.modifierCarte(cartePrise);
+            carteDaoCrud.save(cartePrise);
             joueurQuiALaMain.getCartes().add(cartePrise);
-            dao.modifier(joueurQuiALaMain);
+            daoCrud.save(joueurQuiALaMain);
         }           
 
 
         
-        Carte carteEchangee = carteDAO.recupererCarteViaId(carteEchangeeId);
+        Carte carteEchangee = carteDaoCrud.findOne(carteEchangeeId);
         
         joueurQuiALaMain.getCartes().remove(carteEchangee);
-        dao.modifier(joueurQuiALaMain);
+        daoCrud.save(joueurQuiALaMain);
         carteEchangee.setJoueurProprietaire(joueurVictime);
-        carteDAO.modifierCarte(carteEchangee);
+        carteDaoCrud.save(carteEchangee);
         joueurVictime.getCartes().add(carteEchangee);
-        dao.modifier(joueurVictime);
+        daoCrud.save(joueurVictime);
 
 
     }
     
+    @Override
     public List<Joueur> sortDivination (long partieId) {
         
-        List<Joueur> joueurs = dao.rechercherJoueursPasLaMainEtSommeil(partieId);
+        List<Joueur> joueurs = daoCrud.trouverJoueursEtatPasLaMainEtSommeilProfond(partieId);
         
         return joueurs;
     }
     
+    @Transactional
+    @Override
     public void sortSommeilProfond (Joueur joueurVictime) {
         
         joueurVictime.setEtat(Joueur.EtatJoueur.SOMMEIL_PROFOND);
-        dao.modifier(joueurVictime);
+        daoCrud.save(joueurVictime);
         
     }
 
+    @Transactional
+    @Override
     public List<Joueur> jeterUnSort (long partieId, Joueur joueurVictime, long idCarte1, long idCarte2, long carteEchangeeId ) {
         
-        Joueur joueurQuiALaMain = dao.recupererJoueurQuiALaMain(partieId);
+        Joueur joueurQuiALaMain = daoCrud.trouverjoueurQuiALaMain(partieId);
        
-        Carte carte1 = carteDAO.recupererCarteViaId(idCarte1);
-        Carte carte2 = carteDAO.recupererCarteViaId(idCarte2);
+        Carte carte1 = carteDaoCrud.findOne(idCarte1);
+        Carte carte2 = carteDaoCrud.findOne(idCarte2);
 
         List<Joueur> listJoueurs = null;
         
@@ -185,16 +203,16 @@ public class JoueurService {
         //test si joueurVictime à encore des cartes
         if (joueurVictime.getCartes().size() == 0) {
             joueurVictime.setEtat(Joueur.EtatJoueur.PERDU);
-            dao.modifier(joueurVictime);
+            daoCrud.save(joueurVictime);
         }
         
         //On retire les deux cartes utilisées
         joueurQuiALaMain.getCartes().remove(carte1);
-        dao.modifier(joueurQuiALaMain);
-        carteDAO.supprimerCarte(carte1.getId());
+        daoCrud.save(joueurQuiALaMain);
+        carteDaoCrud.delete(carte1.getId());
         joueurQuiALaMain.getCartes().remove(carte2);
-        dao.modifier(joueurQuiALaMain);
-        carteDAO.supprimerCarte(carte2.getId());
+        daoCrud.save(joueurQuiALaMain);
+        carteDaoCrud.delete(carte2.getId());
         
 
         joueurSuivant(partieId);
@@ -203,9 +221,11 @@ public class JoueurService {
 
     }
 
+    @Transactional
+    @Override
     public void passeSonTour(long partieId) {
         
-        Joueur joueur = dao.recupererJoueurQuiALaMain(partieId);
+        Joueur joueur = daoCrud.trouverjoueurQuiALaMain(partieId);
  
         Carte nouvelleCarte = new Carte();
         Carte.Ingredient[] ingredients = Carte.Ingredient.values();
@@ -213,24 +233,26 @@ public class JoueurService {
         nouvelleCarte.setIngre(ingredients[carteRand]);
         nouvelleCarte.setJoueurProprietaire(joueur);
         joueur.getCartes().add(nouvelleCarte);
-        carteDAO.ajouterCarte(nouvelleCarte);
+        carteDaoCrud.save(nouvelleCarte);
      
         joueurSuivant(partieId);
         
     }
     
+    @Transactional
+    @Override
     public void joueurSuivant(long partieId) {
        
-        Partie partie = partieDAO.rechercherParId(partieId);
+        Partie partie = partieDaoCrud.findOne(partieId);
         Joueur joueurQuiALaMain = recupJoueurQuiALaMain(partieId);
 
-        if (dao.recupererNbJoueurPerdu(partieId) == partieDAO.compterNbJoueur(partieId) - 1) {
+        if (daoCrud.trouverNbJoueurEtatPerdu(partieId) == daoCrud.countByPartieActuelleId(partieId) - 1) {
             joueurQuiALaMain.setEtat(Joueur.EtatJoueur.GAGNE); 
-            dao.modifier(joueurQuiALaMain);//partie finie !
+            daoCrud.save(joueurQuiALaMain);//partie finie !
             return;
         }
 
-        long ordreMax = dao.recupererOrdreMax(partieId);
+        long ordreMax = daoCrud.trouverOrdreMaxDesJoueurs(partieId);
 
         Joueur joueurEvalue = joueurQuiALaMain;
         
@@ -238,9 +260,9 @@ public class JoueurService {
         while (true) {
 
             if (joueurEvalue.getOrdre() >= ordreMax) {
-                joueurEvalue = dao.recupereJoueurParOrdre(partieId, 1);
+                joueurEvalue = daoCrud.findByOrdreAndPartieActuelleId(1, partieId);
             } else {
-                joueurEvalue = dao.recupereJoueurParOrdre(partieId, joueurEvalue.getOrdre()+1);
+                joueurEvalue = daoCrud.findByOrdreAndPartieActuelleId(joueurEvalue.getOrdre()+1, partieId);
             }
             
             if (joueurEvalue.getId() == joueurQuiALaMain.getId()) {
@@ -249,41 +271,38 @@ public class JoueurService {
 
             if (joueurEvalue.getEtat() == Joueur.EtatJoueur.SOMMEIL_PROFOND) {
                 joueurEvalue.setEtat(Joueur.EtatJoueur.N_A_PAS_LA_MAIN);
-                dao.modifier(joueurEvalue);
+                daoCrud.save(joueurEvalue);
             } else if (joueurEvalue.getEtat() == Joueur.EtatJoueur.N_A_PAS_LA_MAIN) {
                 joueurQuiALaMain.setEtat(Joueur.EtatJoueur.N_A_PAS_LA_MAIN);
-                dao.modifier(joueurQuiALaMain);
+                daoCrud.save(joueurQuiALaMain);
                 joueurEvalue.setEtat(Joueur.EtatJoueur.A_LA_MAIN);
-                dao.modifier(joueurEvalue);
+                daoCrud.save(joueurEvalue);
                 return;
             }
         }
     }
 
+    @Override
     public Joueur recupJoueurQuiALaMain(long partieId) {
 
-        Joueur joueur = dao.recupererJoueurQuiALaMain(partieId);
+        Joueur joueur = daoCrud.trouverjoueurQuiALaMain(partieId);
 
         return joueur;
     }
 
-    public List afficherInfosSurLesJoueursPourUnePartie(long partieId) {
 
-        List joueurs = dao.recupererAutresJoueures(partieId);
-
-        return joueurs;
-    }
-
+    @Override
     public List afficherCartes(long joueurId) {
 
-        Joueur joueur = dao.recupererJoueurViaId(joueurId);
-        return joueur.getCartes();
+        return daoCrud.findOne(joueurId).getCartes();
     }
 
+    @Transactional
+    @Override
     public Joueur rejoindrePartie(String pseudo, String avatar, long idPartie) {
 
         // Recherche si joueur existe déjà
-        Joueur joueur = dao.rechercherParPseudo(pseudo);
+        Joueur joueur = daoCrud.findByPseudo(pseudo);
 
         if (joueur == null) {
             //Le joueur n'existe pas encore
@@ -293,19 +312,15 @@ public class JoueurService {
 
         joueur.setAvatar(avatar);
         joueur.setEtat(Joueur.EtatJoueur.N_A_PAS_LA_MAIN);
-        joueur.setOrdre(dao.rechercheOrdreNouveauJoueurPourPartieId(idPartie));
+        joueur.setOrdre(daoCrud.trouverOrdreNouveauJoueurParPartieId(idPartie));
 
         //Associe le joueur à la partie et vise-versa
-        Partie partie = partieDAO.rechercherParId(idPartie);
+        Partie partie = partieDaoCrud.findOne(idPartie);
         joueur.setPartieActuelle(partie);
         List<Joueur> listJoueurs = partie.getJoueurs();
         listJoueurs.add(joueur);
 
-        if (joueur.getId() == null) { //nouveau joueur
-            dao.ajouter(joueur);
-        } else { // joueur existe déjà
-            dao.modifier(joueur);
-        }
+        daoCrud.save(joueur);
 
         return joueur;
 
