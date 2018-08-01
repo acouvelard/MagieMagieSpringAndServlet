@@ -1,0 +1,375 @@
+html {
+  height: 100vh;
+}
+body {
+  margin: 0;
+  background-image: url("../images/castle_background.jpg");
+  background-size: cover;
+  background-attachment: fixed;
+  height: 100%;
+  color: #e8ecf2;
+  font-family: 'Arvo', cursive;
+  font-variant: small-caps;
+}
+
+/*
+  BARRE DE DEFILLEMENT
+*/
+
+/* largeur barre */
+::-webkit-scrollbar {
+    width: 20px;
+}
+/* fond barre */
+::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px grey;
+    border-radius: 5px;
+}
+/* barre qui bouge */
+::-webkit-scrollbar-thumb {
+    background: #1a3868;
+    border-radius: 5px;
+}
+/* barre qui bouge :hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #1d4077;
+}
+
+/*
+  CSS Global
+*/
+header {
+  height: 18%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  color: #3665af;
+  font-family: 'Eater', cursive;
+  font-size: 1.7em;
+  text-shadow: 1px 1px 1px #e8ecf2,5px 4px 5px black;
+
+}
+button {
+  background-color: #6d8bba;
+  border: outset;
+  border-color: #6d8bba;
+  border-radius: 10px;
+  font-family: 'Arvo', cursive;
+  font-variant: small-caps;
+}
+button:active {
+  border: inset;
+  border-color: #6d8bba;
+}
+button:focus, input:focus {
+  outline: none;
+}
+
+.mainSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgba(0,0,0, 0.6);
+  padding: 3% 0;
+  height: 70%;
+}
+
+label {
+  font-size: 20px;
+  margin-top: 15px;
+  margin-bottom: 7px
+}
+
+input {
+  margin-top: 7px;
+  margin-bottom: 15px;
+  background: none;
+  color: #e8ecf2;
+  border: none;
+  box-shadow: inset 0 0 5px #e8ecf2;
+  border-radius: 5px;
+  font-family: 'Arvo', cursive;
+  font-variant: small-caps;
+  font-size: 20px;
+  text-align: center;
+  height: 40px;
+
+}
+
+.buttonBottomLeft {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  height: 15%;
+  width: 20%;
+  position: fixed;
+  bottom: 10%;
+}
+.buttonBottomLeft a {
+  height: 90%;
+  width: 90%;
+}
+.buttonBottomLeft button {
+  height: 100%;
+  width: 100%;
+  font-size: 20px;
+  border-width: 10px;
+}
+
+ul {
+  list-style:none;
+  height: 100%;
+  padding-right: 40px;
+  overflow: auto;
+}
+
+form {
+  height: 70%;
+  width: 30%;
+  display:flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+form div {
+   display: flex;
+   flex-direction: column;
+   justify-content: space-around;
+   align-items: center;
+ }
+
+form button {
+   width: 50%;
+   height: 50px;
+   font-size: 20px;
+   border-width: 5px;
+ }
+
+article.joueursEnnemis {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+img[alt="avatar"] {
+  width: 125px;
+  height: 165px;
+  margin: 10px 20px;
+  border : solid 3px #1a3868;
+}
+
+/*
+  PAGE LISTE DES PARTIES NON DEMARREES
+*/
+
+#listeParties ul {
+  width: 45%;
+  border-left: solid 1px #6d8bba;
+}
+
+#listeParties li {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
+  margin: 10px 0;
+}
+#listeParties li:hover {
+  background-color: rgba(0,0,0,0.4);
+  color:#6d8bba;
+}
+
+#listeParties .nomPartie {
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+#listeParties li button {
+  padding: 3px 6px;
+}
+/*
+  REJOINDRE PARTIE
+*/
+#rejoindrePartie form {
+  width: 60%;
+  height: 85%;
+}
+
+#rejoindrePartie form>div {
+  height: 70%;
+}
+
+#rejoindrePartie .radioAvatar {
+  display: flex;
+  flex-direction: row;
+}
+
+/*
+  DEMARRER UNE PARTIE
+*/
+
+#demarrerPartie article {
+  margin-top: 70px;
+  margin-bottom: 20px;
+}
+
+.joueurPartie {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: solid 3px transparent;
+}
+
+.joueurPartie span {
+   margin: 10px 0;
+}
+
+/*
+  PLATEAU DE JEU
+*/
+
+#plateauJeu  {
+  justify-content: space-between;
+  padding: 0;
+  height:100%;
+}
+ #plateauJeu article {
+   width: 100%;
+   margin-top:25px;
+   margin-bottom: 20px;
+ }
+
+#plateauJeu article:first-child {
+  display: flex;
+  justify-content: space-around;
+}
+#plateauJeu .joueurPartie {
+  cursor: pointer;
+}
+
+#plateauJeu .moi {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+}
+
+#plateauJeu .boutons {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    width: 20%;
+}
+
+#plateauJeu .boutons label:first-child {
+  visibility: hidden;
+}
+
+#plateauJeu input {
+  visibility: hidden;
+}
+#plateauJeu .boutons button {
+    height: 80px;
+    width: 150px;
+    font-size: 20px;
+    margin: 25px 0;
+    cursor: pointer;
+}
+
+#plateauJeu .checkCartes {
+   display: flex;
+   flex-direction: row;
+   justify-content: center;
+   flex-wrap: wrap;
+   width: 65%;
+}
+
+#plateauJeu .checkCartes img {
+  width: 90px;
+  height: 115px;
+  margin: 10px 5px;
+  border : solid 3px #1d4077;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+#plateauJeu .checkCartes img:hover{
+  transform:scale(1.05);
+}
+
+#plateauJeu .joueurPartie:hover  {
+  transform: scale(1.05);
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+/*infobull sur les sorts*/
+
+#plateauJeu .listeSorts {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #6d8bba;
+  position: fixed;
+  bottom: 30px;
+  left: 30px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50px;
+  cursor: help;
+}
+#plateauJeu .listeSorts a {
+  color: lightgrey;
+  text-decoration: none;
+}
+#plateauJeu .listeSorts:hover div, .listeSorts:focus div{
+  transform: scale(1);
+}
+#plateauJeu .listeSorts a div {
+  display: flex;
+  flex-direction: column;
+  padding: 5px 15px;
+  position: absolute;
+  bottom: 35px;
+  left: -10px;
+  height: 100px;
+  width: 410px;
+  border: solid 1px grey;
+  border-radius: 5px;
+  background-color: black;
+  transform: scale(0);
+  transition: all 0.2s;
+}
+
+#plateauJeu .listeSorts a div:after {
+  content: "▼";
+  color: grey;
+  position: absolute;
+  bottom: -16px;
+  left: 12px;
+}
+
+/*JS*/
+.aLaMain .infoJoueur {
+  border-bottom: solid 2px #e8ecf2;
+}
+.selectIngre {
+  border-color: #6d8bba !important;
+  transform: scale(1.05);
+}
+.selectVict {
+  border-color: #6d8bba !important;
+  transform: scale(1.05);
+  background-color: rgba(0, 0, 0, 0.5);
+}
+.perdu {
+  opacity: 0.3;
+}
+.monJoueur {
+  border: solid 3px #e8ecf2 !important;
+}
