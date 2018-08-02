@@ -312,7 +312,11 @@ public class JoueurService implements IJoueurService {
 
         joueur.setAvatar(avatar);
         joueur.setEtat(Joueur.EtatJoueur.N_A_PAS_LA_MAIN);
-        joueur.setOrdre(daoCrud.trouverOrdreNouveauJoueurParPartieId(idPartie));
+        long ordreJoueur = daoCrud.trouverOrdreNouveauJoueurParPartieId(idPartie);
+        if(ordreJoueur == 0) {
+            ordreJoueur = 1;
+        }
+        joueur.setOrdre(ordreJoueur);
 
         //Associe le joueur à la partie et vise-versa
         Partie partie = partieDaoCrud.findOne(idPartie);

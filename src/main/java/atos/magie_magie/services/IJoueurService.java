@@ -7,7 +7,6 @@ package atos.magie_magie.services;
 
 import atos.magie_magie.entity.Joueur;
 import java.util.List;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -15,40 +14,19 @@ import org.springframework.transaction.annotation.Transactional;
  */
 public interface IJoueurService {
 
-    List afficherCartes(long joueurId);
-
-    @Transactional
-    List<Joueur> jeterUnSort(long partieId, Joueur joueurVictime, long idCarte1, long idCarte2, long carteEchangeeId);
-
-    @Transactional
-    void joueurSuivant(long partieId);
-
-    @Transactional
-    void passeSonTour(long partieId);
-
-    List rechercherJoueurEtatPasLaMainEtSommeil(long partieId);
-
-    Joueur recupJoueurQuiALaMain(long partieId);
-
-    Joueur recupJoueurViaId(long joueurId);
-
-    @Transactional
-    Joueur rejoindrePartie(String pseudo, String avatar, long idPartie);
-
-    List<Joueur> sortDivination(long partieId);
-
-    @Transactional
-    void sortHypnose(Joueur joueurVictime, Joueur joueurQuiALaMain, long carteEchangeeId);
-
-    @Transactional
-    void sortInvisibilite(long partieId, Joueur joueurQuiALaMain);
-
-    @Transactional
-    void sortPhiltreDAmour(Joueur joueurVictime, Joueur joueurQuiALaMain);
-
-    @Transactional
-    void sortSommeilProfond(Joueur joueurVictime);
-
-    List tousLesJoueursDeLaPartie(long partieId);
+    public List afficherCartes(long joueurId);
+    public List<Joueur> jeterUnSort(long partieId, Joueur joueurVictime, long idCarte1, long idCarte2, long carteEchangeeId);
+    public void joueurSuivant(long partieId);
+    public void passeSonTour(long partieId);
+    public List rechercherJoueurEtatPasLaMainEtSommeil(long partieId);
+    public Joueur recupJoueurQuiALaMain(long partieId);
+    public Joueur recupJoueurViaId(long joueurId);
+    public Joueur rejoindrePartie(String pseudo, String avatar, long idPartie);
+    public List<Joueur> sortDivination(long partieId);
+    public void sortHypnose(Joueur joueurVictime, Joueur joueurQuiALaMain, long carteEchangeeId);
+    public void sortInvisibilite(long partieId, Joueur joueurQuiALaMain);
+    public void sortPhiltreDAmour(Joueur joueurVictime, Joueur joueurQuiALaMain);
+    public void sortSommeilProfond(Joueur joueurVictime);
+    public List tousLesJoueursDeLaPartie(long partieId);
     
 }

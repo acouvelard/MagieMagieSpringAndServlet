@@ -13,6 +13,7 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  *
@@ -21,7 +22,9 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(name = "DemarrerPartieServlet", urlPatterns = {"/demarrerPartie"})
 public class DemarrerPartieServlet extends AutowireServlet {
 
+    @Autowired
     private JoueurService service = new JoueurService();
+    @Autowired
     private PartieService partieservice = new PartieService();
     
     @Override

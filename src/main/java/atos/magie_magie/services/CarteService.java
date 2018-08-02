@@ -9,20 +9,19 @@ import atos.magie_magie.dao.CarteDAOCrud;
 import atos.magie_magie.entity.Carte;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
  * @author Administrateur
  */
 @Service
-public class CarteService {
+public class CarteService implements ICarteService {
     
 //    private CarteDAO dao = new CarteDAO();
     @Autowired
     private CarteDAOCrud daoCrud;
     
-    @Transactional
+    @Override
     public Carte recupererCarteViaId (long carteId) {
         
         return daoCrud.findOne(carteId);

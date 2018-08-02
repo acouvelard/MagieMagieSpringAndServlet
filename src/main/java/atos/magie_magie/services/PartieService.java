@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Administrateur
  */
 @Service
-public class PartieService {
+public class PartieService implements IParteiService {
 
     @Autowired
     private PartieDAOCrud daoCrud;
@@ -35,6 +35,7 @@ public class PartieService {
 //    private CarteDAO carteDAO = new CarteDAO();
     
     @Transactional
+    @Override
     public Joueur finDePartie (long partieId) {
         List<Joueur> joueurs = joueurDaoCrud.findByPartieActuelleId(partieId);
         
@@ -57,6 +58,7 @@ public class PartieService {
     }
 
     @Transactional
+    @Override
     public Partie demarrerPartie(long partieId) {
 
         Partie partieQuiDemarre = daoCrud.findOne(partieId);
@@ -83,12 +85,14 @@ public class PartieService {
         return partieQuiDemarre;
     }
 
+    @Override
     public List<Partie> listerPartiesNonDemarrees() {
 
         return daoCrud.listerPartieNonDemarrees();
     }
 
     @Transactional
+    @Override
     public Partie creerNouvelleParite(String nom) {
 
         Partie p = new Partie();

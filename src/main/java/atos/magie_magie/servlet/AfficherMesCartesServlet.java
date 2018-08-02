@@ -12,6 +12,7 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  *
@@ -20,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(name = "AfficherMesCartesServlet", urlPatterns = {"/afficherCartes"})
 public class AfficherMesCartesServlet extends AutowireServlet {
     
+    @Autowired
     private JoueurService service = new JoueurService();
     
     @Override
@@ -32,8 +34,4 @@ public class AfficherMesCartesServlet extends AutowireServlet {
         req.getRequestDispatcher("plateauJeu.jsp").forward(req, resp);
         
     }
-
-
-
-
 }

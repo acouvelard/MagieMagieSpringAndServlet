@@ -127,12 +127,6 @@ public class JoueurDAO {
         Query query = em.createQuery("SELECT MAX (j.ordre)+1 FROM Joueur j JOIN j.partieActuelle p WHERE p.id=:idPartie");
         query.setParameter("idPartie", partieId);
 
-        Object res = query.getSingleResult();
-
-        if (res == null) {
-            return 1;
-        }
-
         return (long) query.getSingleResult();
     }
 
