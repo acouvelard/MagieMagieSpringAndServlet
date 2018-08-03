@@ -62,4 +62,23 @@ $(document).ready(function(e) {
     $('.perdu .infoJoueur').append('Perdu');
   }
 
+/*Exemple d'utilisation d'ajax*/
+
+
+function timer() {
+    $.getJSON('ajax-qui-a-la-main', function(data){
+        console.log(data.nomJoueur);
+        /* apparition d'une boutton si id joueur est le bon
+        if (data.idJoueur == 1) {
+            $('button').show();   
+        } else {
+            $('button').hide();            
+        }
+        */
+
+    });
+}
+/*appelle la fonction timer toutes les sec*/
+//setInterval (timer, 1000);
+
 });
